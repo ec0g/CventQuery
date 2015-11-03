@@ -5,17 +5,17 @@ class CventLoginCredentials {
   /*
    * @var String
    */
-  public $accountNumber;
+  public $AccountNumber;
 
   /**
    * @var String
    */
-  public $username;
+  public $UserName;
 
   /**
    * @var String
    */
-  public $password;
+  public $Password;
 
 
   public function __construct($accountNumber=null,$username=null,$password=null) {
