@@ -32,11 +32,9 @@ class CventConnection {
    * @throws \SoapFault
    */
   private function _login() {
-    if (!$this->soapMethodExists('Login')) {
-      throw new \BadMethodCallException("When we tried to login to the remote cvent server we could not find the Login function");
-    }
 
     $this->results = $this->cventSoapClient->client()->Login($this->cventApiCredentials);
+
     if (!isset($this->results->LoginResult->LoginSuccess) || !$this->results->LoginResult->LoginSuccess) {
       throw new SoapFault("Cvent Api Login", "Cvent Api Login Failed " . $this->results->ErrorMessage);
     }
@@ -59,13 +57,6 @@ class CventConnection {
    */
   public function cventServerUrl() {
     return $this->results->ServerURL;
-  }
-
-
-  private function soapMethodExists($methodName){
-    $functions = $this->cventSoapClient->client()->__getFunctions();
-
-    return in_array($methodName,$functions);
   }
 
 }
