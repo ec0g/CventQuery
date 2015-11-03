@@ -14,12 +14,12 @@ class CventConnection {
   /**
    * @var \CventApi\CventSoapClient
    */
-  protected $soapClient;
+  protected $cventSoapClient;
 
   protected $results;
 
   public function __construct(CventSoapClient $client, CventLoginCredentials $credentials) {
-    $this->soapClient = $client;
+    $this->cventSoapClient = $client;
     $this->cventApiCredentials = $credentials;
 
 
@@ -32,18 +32,18 @@ class CventConnection {
    * @throws \SoapFault
    */
   private function _login() {
-    if (!method_exists($this->soapClient->client(), 'Login')) {
+    if (!$this->soapMethodExists('Login')) {
       throw new \BadMethodCallException("When we tried to login to the remote cvent server we could not find the Login function");
     }
 
-    $this->results = $this->soapClient->client()->Login($this->cventApiCredentials);
+    $this->results = $this->cventSoapClient->client()->Login($this->cventApiCredentials);
     if (!isset($this->results->LoginResult->LoginSuccess) || !$this->results->LoginResult->LoginSuccess) {
       throw new SoapFault("Cvent Api Login", "Cvent Api Login Failed " . $this->results->ErrorMessage);
     }
 
   }
 
-  public function login(CventSoapClient $client, CventLoginCredentials $credentials) {
+  public static function login(CventSoapClient $client, CventLoginCredentials $credentials) {
     return new CventConnection($client, $credentials);
   }
 
@@ -60,4 +60,12 @@ class CventConnection {
   public function cventServerUrl() {
     return $this->results->ServerURL;
   }
+
+
+  private function soapMethodExists($methodName){
+    $functions = $this->cventSoapClient->client()->__getFunctions();
+
+    return in_array($methodName,$functions);
+  }
+
 }
