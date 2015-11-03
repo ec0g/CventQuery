@@ -1,71 +1,63 @@
 <?php namespace CventApi;
 
-use SoapClient;
+use CventApi\CventLoginCredentials;
+use CventApi\CventSoapClient;
 use SoapFault;
-use \CventApi\CventLoginCredentials;
-
 
 class CventConnection {
 
   /**
-   * @var String
+   * @var \CventApi\CventLoginCredentials
    */
-  protected $wsdl;
+  protected $cventApiCredentials;
 
   /**
-   * @var SoapClient
+   * @var \CventApi\CventSoapClient
    */
   protected $soapClient;
 
-  /**
-   * @var array
-   */
-  protected $soapOptions;
+  protected $results;
+
+  public function __construct(CventSoapClient $client, CventLoginCredentials $credentials) {
+    $this->soapClient = $client;
+    $this->cventApiCredentials = $credentials;
 
 
-  protected $cventSessionHeader;
-  protected $loginResult;
-
-  public function __construct($wsdl=null) {
-
-    if(empty($wsdl)){
-      throw new \InvalidArgumentException("We need a wsdl file");
-    }
-
-    $this->wsdl = $wsdl;
-
-    $this->soapOptions = [
-      'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
-    ];
-
-    $this->soapClient = new SoapClient($this->wsdl, $this->soapOptions);
-  }
-
-  public function debug($trace = 1, $exceptions = 1) {
-    $this->soapOptions += [
-      'trace' => $trace,
-      'exceptions' => $exceptions
-    ];
-
-    return $this;
-  }
-
-  /**
-   * @return \SoapClient
-   */
-  public function client()
-  {
-    return $this->soapClient;
+    $this->_login();
   }
 
   /**
    *
-   * @return CventConnection
+   * @throws \BadMethodCallException
+   * @throws \SoapFault
    */
-  public static function connect($wsdl=null) {
+  private function _login() {
+    if (!method_exists($this->soapClient->client(), 'Login')) {
+      throw new \BadMethodCallException("When we tried to login to the remote cvent server we could not find the Login function");
+    }
 
-    return new CventConnection($wsdl);
+    $this->results = $this->soapClient->client()->Login($this->cventApiCredentials);
+    if (!isset($this->results->LoginResult->LoginSuccess) || !$this->results->LoginResult->LoginSuccess) {
+      throw new SoapFault("Cvent Api Login", "Cvent Api Login Failed " . $this->results->ErrorMessage);
+    }
+
   }
 
+  public function login(CventSoapClient $client, CventLoginCredentials $credentials) {
+    return new CventConnection($client, $credentials);
+  }
 
+  /**
+   * @return array
+   */
+  public function cventSessionHeader() {
+    return ['CventSessionValue' => $this->results->LoginResult->CventSessionHeader];
+  }
+
+  /**
+   * @return String
+   */
+  public function cventServerUrl() {
+    return $this->results->ServerURL;
+  }
 }
