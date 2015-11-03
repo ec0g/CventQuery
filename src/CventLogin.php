@@ -21,17 +21,22 @@ class CventLogin {
   public function __construct(CventConnection $connection, CventLoginCredentials $credentials) {
     $this->connection = $connection;
     $this->cventApiCredentials = $credentials;
+
+
+    $this->_login();
   }
 
-  public function login() {
+  private function _login() {
     $this->results = $this->connection->client()->Login($this->cventApiCredentials);
 
     if (!isset($this->results->LoginResult->LoginSuccess) || !$this->results->LoginResult->LoginSuccess) {
       throw new SoapFault("Cvent Api Login", "Cvent Api Login Failed " . $this->results->ErrorMessage);
     }
 
-    return $this;
+  }
 
+  public function login(CventConnection $connection, CventLoginCredentials $credentials) {
+    return new CventLogin($connection, $credentials);
   }
 
   /**
