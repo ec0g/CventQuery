@@ -9,5 +9,7 @@ use Dotenv\Dotenv;
 $env = new Dotenv(__DIR__);
 $env->load();
 
-///$login = new CventLogin(getenv('WSDL'))->
+$conn = \CventApi\CventConnection::connect(getenv('WSDL'));
+$creds = new CventLoginCredentials(getenv('ACCOUNT'),getenv('API_USERNAME'),getenv('API_PASSWORD'));
+
 
