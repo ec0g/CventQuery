@@ -28,11 +28,17 @@ class CventConnection {
 
   public function __construct($wsdl=null) {
 
+    if(empty($wsdl)){
+      throw new \InvalidArgumentException("We need a wsdl file");
+    }
+
     $this->wsdl = $wsdl;
 
     $this->soapOptions = [
       'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
     ];
+
+    $this->soapClient = new SoapClient($this->wsdl, $this->soapOptions);
   }
 
   public function debug($trace = 1, $exceptions = 1) {
@@ -54,11 +60,11 @@ class CventConnection {
 
   /**
    *
-   * @return $this
+   * @return CventConnection
    */
-  public function connect() {
-    $this->soapClient = new SoapClient($this->wsdl, $this->soapOptions);
-    return $this->soapClient;
+  public static function connect($wsdl=null) {
+
+    return new CventConnection($wsdl);
   }
 
 
