@@ -1,6 +1,6 @@
 {
-  "name": "CventApi",
-  "description": "CventApi is a library package used to interact with Cvent's SOAP Api",
+  "name": "CventQuery",
+  "description": "CventQuery is a library package used to interact with Cvent's SOAP API",
   "license": "MIT",
   "keywords": [
     "cvent,soap"
@@ -23,7 +23,7 @@
       "src/"
     ],
     "psr-4": {
-      "CventApi\\": "src/"
+      "CventQuery\\": "src/"
     }
   }
 }

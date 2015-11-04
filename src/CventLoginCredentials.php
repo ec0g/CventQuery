@@ -1,4 +1,4 @@
-<?php namespace CventApi;
+<?php namespace CventQuery;
 
 class CventLoginCredentials {
 

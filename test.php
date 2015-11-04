@@ -2,9 +2,9 @@
 
 require_once 'vendor/autoload.php';
 
-use CventApi\CventLoginCredentials;
-use CventApi\CventSoapClient;
-use CventApi\CventConnection;
+use CventQuery\CventLoginCredentials;
+use CventQuery\CventSoapClient;
+use CventQuery\CventConnection;
 use Dotenv\Dotenv;
 
 $env = new Dotenv(__DIR__);

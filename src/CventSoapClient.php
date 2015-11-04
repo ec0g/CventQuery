@@ -1,8 +1,8 @@
-<?php namespace CventApi;
+<?php namespace CventQuery;
 
 use SoapClient;
 use SoapFault;
-use \CventApi\CventLoginCredentials;
+use \CventQuery\CventLoginCredentials;
 
 
 class CventSoapClient {
@@ -24,7 +24,6 @@ class CventSoapClient {
 
 
   protected $cventSessionHeader;
-  protected $loginResult;
 
   public function __construct($wsdl=null) {
 

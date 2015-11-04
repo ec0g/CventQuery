@@ -1,18 +1,18 @@
-<?php namespace CventApi;
+<?php namespace CventQuery;
 
-use CventApi\CventLoginCredentials;
-use CventApi\CventSoapClient;
+use CventQuery\CventLoginCredentials;
+use CventQuery\CventSoapClient;
 use SoapFault;
 
 class CventConnection {
 
   /**
-   * @var \CventApi\CventLoginCredentials
+   * @var \CventQuery\CventLoginCredentials
    */
   protected $cventApiCredentials;
 
   /**
-   * @var \CventApi\CventSoapClient
+   * @var \CventQuery\CventSoapClient
    */
   protected $cventSoapClient;
 
@@ -39,10 +39,28 @@ class CventConnection {
       throw new SoapFault("Cvent Api Login", "Cvent Api Login Failed " . $this->results->ErrorMessage);
     }
 
+    $this->setSoapHeader();
+  }
+
+  private function setSoapHeader() {
+    $soapHeader = new \SoapHeader($this->results->LoginResult->ServerURL, 'CventSessionHeader', $this->results->LoginResult->CventSessionHeader);
+    $this->cventSoapClient->client()->__setSoapHeaders($soapHeader);
   }
 
   public static function login(CventSoapClient $client, CventLoginCredentials $credentials) {
     return new CventConnection($client, $credentials);
+  }
+
+  /**
+   * @param $method The name of the soap method to call
+   * @param $data Mixed data, usually an object
+   *
+   * @throws SoapFault
+   *
+   * @return mixed
+   */
+  public function request($method, $data) {
+   return $this->cventSoapClient->client()->__call($method,$data);
   }
 
   /**
@@ -56,7 +74,7 @@ class CventConnection {
    * @return String
    */
   public function cventServerUrl() {
-    return $this->results->ServerURL;
+    return $this->results->LoginResult->ServerURL;
   }
 
 }
