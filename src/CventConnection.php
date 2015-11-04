@@ -39,12 +39,18 @@ class CventConnection {
       throw new SoapFault("Cvent Api Login", "Cvent Api Login Failed " . $this->results->ErrorMessage);
     }
 
+    $this->setSoapEndpoint();
     $this->setSoapHeader();
+
   }
 
   private function setSoapHeader() {
-    $soapHeader = new \SoapHeader($this->results->LoginResult->ServerURL, 'CventSessionHeader', $this->results->LoginResult->CventSessionHeader);
-    $this->cventSoapClient->client()->__setSoapHeaders($soapHeader);
+    $soapHeader = new \SoapHeader('http://api.cvent.com/2006-11','CventSessionHeader', $this->cventSessionHeader());
+    $this->cventSoapClient->setHeader($soapHeader);
+  }
+
+  private function setSoapEndpoint(){
+    $this->cventSoapClient->setLocation($this->results->LoginResult->ServerURL);
   }
 
   public static function login(CventSoapClient $client, CventLoginCredentials $credentials) {
@@ -60,7 +66,7 @@ class CventConnection {
    * @return mixed
    */
   public function request($method, $data) {
-   return $this->cventSoapClient->client()->__call($method,$data);
+   return $this->cventSoapClient->client()->$method($data);
   }
 
   /**

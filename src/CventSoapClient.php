@@ -25,7 +25,7 @@ class CventSoapClient {
 
   protected $cventSessionHeader;
 
-  public function __construct($wsdl=null) {
+  public function __construct($wsdl=null,$debug=false) {
 
     if(empty($wsdl)){
       throw new \InvalidArgumentException("We need a wsdl file");
@@ -37,6 +37,10 @@ class CventSoapClient {
       'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
     ];
 
+    if($debug){
+     $this->debug();
+    }
+
     $this->soapClient = new SoapClient($this->wsdl, $this->soapOptions);
   }
 
@@ -45,8 +49,6 @@ class CventSoapClient {
       'trace' => $trace,
       'exceptions' => $exceptions
     ];
-
-    return $this;
   }
 
   /**
@@ -61,9 +63,17 @@ class CventSoapClient {
    *
    * @return CventSoapClient
    */
-  public static function connect($wsdl=null) {
+  public static function connect($wsdl=null,$debug=false) {
 
-    return new CventSoapClient($wsdl);
+    return new CventSoapClient($wsdl,$debug);
+  }
+
+  public function setHeader(\SoapHeader $header){
+    $this->soapClient->__setSoapHeaders($header);
+  }
+
+  public function setLocation($url){
+    $this->soapClient->__setLocation($url);
   }
 
 
