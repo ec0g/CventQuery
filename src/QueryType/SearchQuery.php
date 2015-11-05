@@ -9,6 +9,7 @@
 namespace CventQuery\QueryType;
 
 use CventQuery\CventConnection;
+use CventQuery\CventObject\EventCventObject;
 
 
 /**
@@ -20,8 +21,11 @@ use CventQuery\CventConnection;
  */
 class SearchQuery extends BaseQuery {
 
+  const SEARCH_CALL_NAME = "Search";
+
   public function __construct(CventConnection $connection){
-    parent::__construct($connection, "Search");
+    parent::__construct($connection,self::SEARCH_CALL_NAME);
+
   }
 
 }

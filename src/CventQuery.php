@@ -9,6 +9,7 @@
 namespace CventQuery;
 
 use CventQuery\CventConnection;
+use CventQuery\QueryType\QueryTypeInterface;
 
 /**
  * File: Cvent.php
@@ -18,14 +19,9 @@ use CventQuery\CventConnection;
  */
 class CventQuery {
 
-  private $cventConnect;
-
-  public function __construct(CventConnection $connection, QueryTypeInterface $queryType) {
-
-    $this->cventConnect = $connection;
+  public static function create(CventConnection $connection, QueryTypeInterface $queryType)
+  {
+    //return new
   }
-
-
-
 
 }

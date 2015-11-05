@@ -26,7 +26,11 @@ class EventCventObject extends BaseCventObject {
    *
    * @param string $type
    */
-  public function __construct($type="") {
-    parent::__construct($type);
+  public function __construct() {
+    parent::__construct("Event");
+  }
+
+  public function parameters() {
+    return $this->parameters;
   }
 }

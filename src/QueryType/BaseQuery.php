@@ -10,6 +10,7 @@ namespace CventQuery\QueryType;
 
 use CventQuery\CventConnection;
 use BadMethodCallException;
+use CventQuery\CventObject\CventObjectInterface;
 
 /**
  * File: QueryBase.php
@@ -21,30 +22,30 @@ use BadMethodCallException;
 class BaseQuery implements QueryTypeInterface {
 
   /**
-   * @var String
-   */
-  protected $type;
-
-  /**
-   * @var mixed
-   */
-  protected $params;
-
-  /**
    * @var CventConnection
    */
   protected $conn;
 
   /**
-   * QueryBase constructor.
-   *
-   * @param $type
-   * @param $parameters
+   * @var String The Cvent call type. Ex. Search, Retrieve, etc...
    */
-  public function __construct(CventConnection $connection, $callType="", $parameters=null) {
-    $this->params = !empty($parameters) ?: new \stdClass();
+  protected $callName;
+
+
+  /**
+   * @var CventObjectInterface
+   */
+  protected $cventObject;
+
+  /**
+   * BaseQuery constructor.
+   *
+   * @param \CventQuery\CventConnection $connection
+   * @param String                      $cventCallName
+   */
+  public function __construct(CventConnection $connection, $cventCallName) {
     $this->conn = $connection;
-    $this->type = $callType;
+    $this->callName = $cventCallName;
   }
 
 
@@ -58,7 +59,7 @@ class BaseQuery implements QueryTypeInterface {
     $results = [];
 
     try {
-      $results = $this->conn->request($this->type,$this->params);
+      $results = $this->conn->request($this->callName, $this->cventObject->prepared());
     } catch (\SoapFault $e) {
       echo $e->getMessage();
     }
@@ -66,29 +67,13 @@ class BaseQuery implements QueryTypeInterface {
     return $results;
   }
 
-  /**
-   * @return String
-   */
-  public function type() {
-    return $this->type;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function data() {
-    return $this->params;
-  }
-
-  public function where(){
+  public function where() {
     throw new BadMethodCallException("You have to implement this method as it applies to the query type");
   }
 
-  public function on(){
+  public function on(QueryTypeInterface $cventObjectType) {
     throw new BadMethodCallException("You have to implement this method as it applies to the query type");
   }
-
-
 
 
 }

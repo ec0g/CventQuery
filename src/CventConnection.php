@@ -58,7 +58,7 @@ class CventConnection {
   }
 
   /**
-   * @param $method The name of the soap method to call
+   * @param $method String The name of the soap method to call
    * @param $data Mixed data, usually an object
    *
    * @throws SoapFault

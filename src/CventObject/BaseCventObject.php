@@ -8,7 +8,7 @@
 
 namespace CventQuery\CventObject;
 
-use CventObjectInterface;
+use CventQuery\CventObject\CventObjectInterface;
 
 /**
  * File: BaseCventObject.php
@@ -19,7 +19,15 @@ use CventObjectInterface;
  */
 class BaseCventObject implements CventObjectInterface{
 
+  /**
+   * @var string
+   */
   protected $type;
+
+  /**
+   * @var mixed
+   */
+  protected $parameters;
 
   public function __construct($type="") {
     if(empty($type)){
