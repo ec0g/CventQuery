@@ -9,6 +9,7 @@
 namespace CventQuery\QueryType;
 
 use CventQuery\CventConnection;
+use BadMethodCallException;
 
 /**
  * File: QueryBase.php
@@ -17,7 +18,7 @@ use CventQuery\CventConnection;
  *
  * Description:
  */
-class QueryBase implements QueryInterface {
+class BaseQuery implements QueryTypeInterface {
 
   /**
    * @var String
@@ -40,8 +41,8 @@ class QueryBase implements QueryInterface {
    * @param $type
    * @param $parameters
    */
-  public function __construct(CventConnection $connection, $callType, $parameters) {
-    $this->params = $parameters;
+  public function __construct(CventConnection $connection, $callType="", $parameters=null) {
+    $this->params = !empty($parameters) ?: new \stdClass();
     $this->conn = $connection;
     $this->type = $callType;
   }
@@ -78,6 +79,16 @@ class QueryBase implements QueryInterface {
   public function data() {
     return $this->params;
   }
+
+  public function where(){
+    throw new BadMethodCallException("You have to implement this method as it applies to the query type");
+  }
+
+  public function on(){
+    throw new BadMethodCallException("You have to implement this method as it applies to the query type");
+  }
+
+
 
 
 }

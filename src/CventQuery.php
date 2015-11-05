@@ -20,7 +20,7 @@ class CventQuery {
 
   private $cventConnect;
 
-  public function __construct(CventConnection $connection) {
+  public function __construct(CventConnection $connection, QueryTypeInterface $queryType) {
 
     $this->cventConnect = $connection;
   }
