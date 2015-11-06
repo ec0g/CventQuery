@@ -1,4 +1,7 @@
 <?php namespace CventQuery\QueryType;
+
+use CventQuery\CventObject\CventObjectInterface;
+
 /**
  * Created by PhpStorm.
  * User: goce
@@ -9,9 +12,9 @@
 interface QueryTypeInterface {
 
   /**
-   * @return void
+   * @return array
    */
-  public function call();
+  public function get();
 
   /**
    * The type of cvent object(ObjectType). Ex. Event, Contact, etc...
@@ -19,12 +22,12 @@ interface QueryTypeInterface {
    *
    * @return mixed
    */
-  public function on(QueryTypeInterface $cventObjectType);
+  public function on(CventObjectInterface $cventObjectType);
 
   /**
    *
    * @return mixed
    */
-  public function where();
+  public function where($paraName,$value,$operator);
 
 }

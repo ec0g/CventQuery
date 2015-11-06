@@ -14,7 +14,7 @@ $client = CventSoapClient::connect(getenv('WSDL'),TRUE);
 $creds = new CventLoginCredentials(getenv('ACCOUNT'),getenv('API_USERNAME'),getenv('API_PASSWORD'));
 
 $conn = CventConnection::login($client,$creds);
-
+/*
 $params = new StdClass();
 $params->ObjectType = 'Event';
 $params->CvSearchObject=new StdClass();
@@ -26,7 +26,15 @@ $results = $query->call();
 
 echo "<pre>";
 print_r($results);
+*/
 
+$sQuery = new \CventQuery\QueryType\SearchQuery($conn);
+
+$sQuery->on(new \CventQuery\CventObject\EventCventObject());
+
+$temp = $sQuery->get();
+
+print_r($temp);
 //echo $conn->cventServerUrl();
 
 

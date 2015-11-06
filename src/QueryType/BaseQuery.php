@@ -48,13 +48,17 @@ class BaseQuery implements QueryTypeInterface {
     $this->callName = $cventCallName;
   }
 
+  public function get() {
+    return $this->call();
+  }
+
 
   /**
    * @return array
    *
    * @throws \SoapFault
    */
-  public function call() {
+  private function call() {
 
     $results = [];
 
@@ -67,12 +71,13 @@ class BaseQuery implements QueryTypeInterface {
     return $results;
   }
 
-  public function where() {
-    throw new BadMethodCallException("You have to implement this method as it applies to the query type");
+  public function where($paramName,$value,$operator) {
+    throw new BadMethodCallException("You have to implement this method as it applies to the query call type");
   }
 
-  public function on(QueryTypeInterface $cventObjectType) {
-    throw new BadMethodCallException("You have to implement this method as it applies to the query type");
+  public function on(CventObjectInterface $cventObjectType) {
+    $this->cventObject = $cventObjectType;
+    return $this;
   }
 
 

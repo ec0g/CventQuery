@@ -43,4 +43,16 @@ class BaseCventObject implements CventObjectInterface{
     return $this->type;
   }
 
+  public function prepared() {
+    throw new \BadMethodCallException("This method must be implemented in child class");
+  }
+
+  public function parameters() {
+    return $this->parameters;
+  }
+
+  public function setParameter($name, $value) {
+    throw new \BadMethodCallException("You have to implement this function for each query type");
+  }
+
 }

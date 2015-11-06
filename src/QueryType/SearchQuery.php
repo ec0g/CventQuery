@@ -28,4 +28,8 @@ class SearchQuery extends BaseQuery {
 
   }
 
+  public function where($paramName,$value,$operator) {
+    parent::where($paramName,$value,$operator);
+  }
+
 }
