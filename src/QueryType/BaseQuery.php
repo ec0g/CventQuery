@@ -49,16 +49,24 @@ class BaseQuery implements QueryTypeInterface {
   }
 
   public function get() {
-    return $this->call();
+    $resultsObject = $this->call();
+
+    $results = new \stdClass();
+
+    if(isset($resultsObject->SearchResult)){
+      $results = $resultsObject->SearchResult;
+    }
+
+    return $results;
   }
 
 
   /**
-   * @return array
+   * @return object
    *
    * @throws \SoapFault
    */
-  private function call() {
+  protected function call() {
 
     $results = [];
 
