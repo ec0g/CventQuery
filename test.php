@@ -28,11 +28,16 @@ echo "<pre>";
 print_r($results);
 */
 
-$sQuery = new \CventQuery\QueryType\SearchQuery($conn);
+//$sQuery = new \CventQuery\QueryType\SearchQuery($conn);
 
-$sQuery->on(new \CventQuery\CventObject\EventCventObject());
+//$sQuery->on(new \CventQuery\CventObject\EventCventObject());
 
-$temp = $sQuery->get();
+//$temp = $sQuery->get();
+$event = new CventQuery\CventObject\Event();
+
+$query = new \CventQuery\CventQuery($conn,$event);
+
+$temp = $query->get();
 
 print_r($temp);
 //echo $conn->cventServerUrl();

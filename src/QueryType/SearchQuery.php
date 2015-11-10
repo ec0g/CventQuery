@@ -9,8 +9,9 @@
 namespace CventQuery\QueryType;
 
 use CventQuery\CventConnection;
+use CventQuery\CventObject\CventObjectInterface;
 use CventQuery\CventObject\EventCventObject;
-
+use stdClass;
 
 /**
  * File: SearchQuery.php
@@ -21,15 +22,28 @@ use CventQuery\CventObject\EventCventObject;
  */
 class SearchQuery extends BaseQuery {
 
-  const SEARCH_CALL_NAME = "Search";
 
-  public function __construct(CventConnection $connection){
-    parent::__construct($connection,self::SEARCH_CALL_NAME);
+  private $orSearch = 'OrSearch';
+  private $andSearch = 'AndSearch';
 
+  private $searchObject;
+  private $parameters;
+
+  protected $cventObject;
+
+  public function __construct(CventConnection $connection, CventObjectInterface $cventObject){
+
+    // default parameters for the search object
+    $this->searchObject = new stdClass();
+    $this->searchObject->SearchType = $this->orSearch;
+
+    $this->parameters = new stdClass();
+    $this->parameters->ObjectType = $cventObject->type();
+    $this->parameters->CvSearchObject = new stdClass();
+    $this->parameters->CvSearchObject = $this->searchObject;
+
+    parent::__construct($connection,self::SEARCH_CALL_NAME, $this->parameters);
   }
 
-  public function where($paramName,$value,$operator) {
-    parent::where($paramName,$value,$operator);
-  }
 
 }
