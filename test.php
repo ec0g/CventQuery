@@ -37,7 +37,7 @@ $event = new CventQuery\CventObject\Event();
 
 $query = new \CventQuery\CventQuery($conn,$event);
 
-$temp = $query->get();
+$temp = $query->where('EventStatus','Completed',\CventQuery\SearchOperator::NOT_EQUAL_TO)->get();
 
 print_r($temp);
 //echo $conn->cventServerUrl();

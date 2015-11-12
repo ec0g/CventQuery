@@ -56,6 +56,17 @@ class CventQuery {
     return $temp;
   }
 
+  public function where($paramName,$value,$operator="")
+  {
+    if(empty($operator)){
+      $operator = SearchOperator::EQUALS;
+    }
+
+    $this->search->setFilter($paramName,$value,$operator);
+
+    return $this;
+  }
+
   /**
    * @return array
    */
@@ -83,5 +94,7 @@ class CventQuery {
 
     return $results;
   }
+
+
 
 }

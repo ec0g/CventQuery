@@ -16,12 +16,28 @@ class CventConnection {
    */
   protected $cventSoapClient;
 
+  /**
+   * Stores the login request return information.
+   *
+   * @var \stdClass
+   */
   protected $results;
 
-  public function __construct(CventSoapClient $client, CventLoginCredentials $credentials) {
+  /**
+   * @var String
+   */
+  protected $cventSessionHeaderValue;
+
+  /**
+   * The expiration time of the cvent session header. By deafault it should expire one hour from the
+   * time it was issued.
+   * @var int
+   */
+  protected $cventSessionHeaderExpires;
+
+  public function __construct(CventSoapClient $client, CventLoginCredentials $credentials, $cventSessionHeaderValue="") {
     $this->cventSoapClient = $client;
     $this->cventApiCredentials = $credentials;
-
 
     $this->_login();
   }
@@ -39,9 +55,10 @@ class CventConnection {
       throw new SoapFault("Cvent Api Login", "Cvent Api Login Failed " . $this->results->ErrorMessage);
     }
 
+    $this->cventSessionHeaderValue = $this->results->LoginResult->CventSessionHeader;
+
     $this->setSoapEndpoint();
     $this->setSoapHeader();
-
   }
 
   private function setSoapHeader() {
@@ -55,6 +72,24 @@ class CventConnection {
 
   public static function login(CventSoapClient $client, CventLoginCredentials $credentials) {
     return new CventConnection($client, $credentials);
+  }
+
+  /**
+   * Saves the cvent session header value (if pulled from cache for ex.) and sets it's
+   * expiration.
+   *
+   * @param $header String
+   * @param $expires UTC time
+   */
+  public function saveCventSessionHeaderValue($header,$expires=null)
+  {
+    $this->cventSessionHeaderValue = $header;
+
+    if(empty($expires) || !is_numeric($expires)){
+      $this->cventSessionHeaderExpires = time() + 3600;
+    }else{
+      $this->cventSessionHeaderExpires = $expires;
+    }
   }
 
   /**
@@ -73,7 +108,7 @@ class CventConnection {
    * @return array
    */
   public function cventSessionHeader() {
-    return ['CventSessionValue' => $this->results->LoginResult->CventSessionHeader];
+    return ['CventSessionValue' => $this->cventSessionHeaderValue];
   }
 
   /**
