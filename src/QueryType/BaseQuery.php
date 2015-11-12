@@ -31,11 +31,10 @@ class BaseQuery implements QueryTypeInterface {
    */
   protected $callName;
 
-
   /**
-   * @var CventObjectInterface
+   * @var mixed array|stdClass
    */
-  protected $cventObject;
+  protected $parameters;
 
   /**
    * BaseQuery constructor.
@@ -43,50 +42,29 @@ class BaseQuery implements QueryTypeInterface {
    * @param \CventQuery\CventConnection $connection
    * @param String                      $cventCallName
    */
-  public function __construct(CventConnection $connection, $cventCallName) {
+  public function __construct(CventConnection $connection, $cventCallName, $queryParameters) {
     $this->conn = $connection;
     $this->callName = $cventCallName;
+
+    $this->parameters = $queryParameters;
   }
-
-  public function get() {
-    $resultsObject = $this->call();
-
-    $results = new \stdClass();
-
-    if(isset($resultsObject->SearchResult)){
-      $results = $resultsObject->SearchResult;
-    }
-
-    return $results;
-  }
-
 
   /**
    * @return object
    *
    * @throws \SoapFault
    */
-  protected function call() {
+  public function call() {
 
     $results = [];
 
     try {
-      $results = $this->conn->request($this->callName, $this->cventObject->prepared());
+      $results = $this->conn->request($this->callName, $this->parameters);
     } catch (\SoapFault $e) {
-      echo $e->getMessage();
+      return $e->getMessage();
     }
 
     return $results;
   }
-
-  public function where($paramName,$value,$operator) {
-    throw new BadMethodCallException("You have to implement this method as it applies to the query call type");
-  }
-
-  public function on(CventObjectInterface $cventObjectType) {
-    $this->cventObject = $cventObjectType;
-    return $this;
-  }
-
 
 }
