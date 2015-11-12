@@ -35,11 +35,38 @@ class CventConnection {
    */
   protected $cventSessionHeaderExpires;
 
-  public function __construct(CventSoapClient $client, CventLoginCredentials $credentials, $cventSessionHeaderValue="") {
+  /**
+   * @var String
+   */
+  protected $cventSoapUrl;
+
+  /**
+   * CventConnection constructor.
+   *
+   * @param \CventQuery\CventSoapClient       $client
+   * @param \CventQuery\CventLoginCredentials $credentials
+   * @param array                             $cventSession
+   *  Session header array has the following keys:
+   *    'value','url','expires'
+   */
+  public function __construct(CventSoapClient $client, CventLoginCredentials $credentials, array $cventSession=[]) {
+
+    $this->cventSessionHeaderExpires = 0;
+
     $this->cventSoapClient = $client;
     $this->cventApiCredentials = $credentials;
 
-    $this->_login();
+    if(!empty($cventSession['value'])){
+      $this->saveCventSessionHeaderValue($cventSession['value']);
+    }
+
+    if(!empty($cventSession['expires']) && is_numeric($cventSession['expires'])){
+      $this->cventSessionHeaderExpires = $cventSession['expires'];
+    }
+
+    if(!empty($cventSession['url'])){
+      $this->cventSoapUrl = $cventSession['url'];
+    }
   }
 
   /**
@@ -47,7 +74,7 @@ class CventConnection {
    * @throws \BadMethodCallException
    * @throws \SoapFault
    */
-  private function _login() {
+  private function login() {
 
     $this->results = $this->cventSoapClient->client()->Login($this->cventApiCredentials);
 
@@ -56,22 +83,19 @@ class CventConnection {
     }
 
     $this->cventSessionHeaderValue = $this->results->LoginResult->CventSessionHeader;
+    $this->cventSessionHeaderExpires = time();
 
     $this->setSoapEndpoint();
-    $this->setSoapHeader();
+    $this->setSoapSessionHeader();
   }
 
-  private function setSoapHeader() {
+  private function setSoapSessionHeader() {
     $soapHeader = new \SoapHeader('http://api.cvent.com/2006-11','CventSessionHeader', $this->cventSessionHeader());
     $this->cventSoapClient->setHeader($soapHeader);
   }
 
   private function setSoapEndpoint(){
     $this->cventSoapClient->setLocation($this->results->LoginResult->ServerURL);
-  }
-
-  public static function login(CventSoapClient $client, CventLoginCredentials $credentials) {
-    return new CventConnection($client, $credentials);
   }
 
   /**
@@ -92,6 +116,16 @@ class CventConnection {
     }
   }
 
+  public function getCventSessionHeaderValue()
+  {
+    return $this->cventSessionHeaderValue;
+  }
+
+  public function getCventSessionExpiration()
+  {
+    return $this->cventSessionHeaderExpires;
+  }
+
   /**
    * @param $method String The name of the soap method to call
    * @param $data Mixed data, usually an object
@@ -101,6 +135,12 @@ class CventConnection {
    * @return mixed
    */
   public function request($method, $data) {
+    if($this->cventSessionHeaderExpires < time()){
+      $this->login();
+    }else{
+      $this->setSoapSessionHeader();
+    }
+
    return $this->cventSoapClient->client()->$method($data);
   }
 
@@ -108,7 +148,11 @@ class CventConnection {
    * @return array
    */
   public function cventSessionHeader() {
-    return ['CventSessionValue' => $this->cventSessionHeaderValue];
+    $val = [];
+    if(!empty($this->cventSessionHeaderValue)){
+      $val = ['CventSessionValue' => $this->cventSessionHeaderValue];
+    }
+    return $val;
   }
 
   /**

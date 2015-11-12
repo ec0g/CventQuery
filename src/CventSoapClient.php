@@ -22,7 +22,6 @@ class CventSoapClient {
    */
   protected $soapOptions;
 
-
   protected $cventSessionHeader;
 
   public function __construct($wsdl=null,$debug=false) {
@@ -70,6 +69,10 @@ class CventSoapClient {
 
   public function setHeader(\SoapHeader $header){
     $this->soapClient->__setSoapHeaders($header);
+  }
+
+  public function makeCventSessionHeader($headerValue){
+
   }
 
   public function setLocation($url){
