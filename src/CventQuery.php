@@ -39,6 +39,11 @@ class CventQuery {
   private $retrieve;
 
   /**
+   * @var array An array of object Ids
+   */
+  private $objectIds;
+
+  /**
    * @var CventConnection
    */
   protected $connection;
@@ -61,9 +66,14 @@ class CventQuery {
 
   public function get() {
     $results = [];
-    $search = $this->getSearchQueryResults();
 
-    $temp = $this->getRetrieveQueryResults($search);
+    if(empty($this->objectIds)){
+      $this->objectIds = $this->getSearchQueryResults();
+    }
+
+    $temp = $this->getRetrieveQueryResults($this->objectIds);
+
+    $this->objectIds = [];
 
     return $temp;
   }
@@ -79,6 +89,10 @@ class CventQuery {
     return $this;
   }
 
+  public function find(array $ids){
+
+    $this->objectIds = $ids;
+  }
 
   /**
    * @return array
