@@ -38,11 +38,23 @@ class CventQuery {
    */
   private $retrieve;
 
+  /**
+   * @var CventConnection
+   */
+  protected $connection;
+
+  /**
+   * CventQuery constructor.
+   *
+   * @param \CventQuery\CventConnection                  $connection
+   * @param \CventQuery\CventObject\CventObjectInterface $cventObject
+   */
   public function __construct(CventConnection $connection, CventObjectInterface $cventObject) {
 
-    $this->search = new SearchCall($connection, $cventObject);
-    $this->retrieve = new RetrieveCall($connection, $cventObject);
+    $this->search = new SearchCall($cventObject);
+    $this->retrieve = new RetrieveCall($cventObject);
 
+    $this->connection = $connection;
     $this->cventObject = $cventObject;
   }
 
@@ -71,7 +83,7 @@ class CventQuery {
    * @return array
    */
   private function getSearchQueryResults(){
-    $searchResults = $this->search->runQuery();
+    $searchResults = $this->connection->request($this->search->method(),$this->search->data());
 
     $results = [];
 
@@ -86,7 +98,7 @@ class CventQuery {
   {
     $results = [];
 
-    $retrieveResults = $this->retrieve->whereIds($Ids)->runQuery();
+    $retrieveResults = $this->connection->request($this->retrieve->method(),$this->retrieve->whereIds($Ids)->data());
 
     if(!empty($retrieveResults->RetrieveResult->CvObject)){
       $results = $retrieveResults->RetrieveResult->CvObject;

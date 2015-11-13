@@ -37,7 +37,7 @@ class CventSoapClient {
     ];
 
     if($debug){
-     $this->debug();
+      $this->debug();
     }
 
     $this->soapClient = new SoapClient($this->wsdl, $this->soapOptions);
@@ -56,6 +56,12 @@ class CventSoapClient {
   public function client()
   {
     return $this->soapClient;
+  }
+
+  public function call($method,$data)
+  {
+    $results = $this->soapClient->$method($data);
+    return $results;
   }
 
   /**
@@ -81,3 +87,5 @@ class CventSoapClient {
 
 
 }
+
+

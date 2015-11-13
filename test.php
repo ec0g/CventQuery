@@ -5,6 +5,7 @@ require_once 'vendor/autoload.php';
 use CventQuery\CventLoginCredentials;
 use CventQuery\CventSoapClient;
 use CventQuery\CventConnection;
+use CventQuery\SearchOperator;
 use Dotenv\Dotenv;
 
 $env = new Dotenv(__DIR__);
@@ -44,7 +45,25 @@ $event = new CventQuery\CventObject\Event();
 
 $query = new \CventQuery\CventQuery($conn, $event);
 
-$temp = $query->where('EventStatus', 'Completed', \CventQuery\SearchOperator::NOT_EQUAL_TO)->get();
+//we want only pending events
+$query->where('EventStatus', 'Completed', \CventQuery\SearchOperator::EQUALS);
+
+//additional filters
+$utcTimeZone = new DateTimeZone('UTC');
+$eventStartDate = new DateTime('1/1/2015', $utcTimeZone);
+//$dateString = $eventStartDate->format('m/d/Y');
+$dateString = $eventStartDate->format('Y-m-d\TH:i:s');
+
+//$query->where('LastModifiedDate', $dateString,SearchOperator::LESS_THAN_OR_EQUAL_TO);
+//$query->where('EventStatus', 'Completed', \CventQuery\SearchOperator::EQUALS);
+
+$temp=[];
+
+try{
+  $temp = $query->get();
+}catch (SoapFault $e){
+  print_r($e);
+}
 
 print_r($temp);
 //echo $conn->cventServerUrl();

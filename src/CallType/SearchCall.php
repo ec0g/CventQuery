@@ -1,5 +1,6 @@
 <?php namespace CventQuery\CallType;
 
+use CventQuery\CventConnection;
 use CventQuery\CventObject\CventObjectInterface;
 use stdClass;
 
@@ -30,8 +31,8 @@ class SearchCall extends BaseCall {
    * @param \CventQuery\CventConnection $connection
    * @param                             $data
    */
-  public function __construct(\CventQuery\CventConnection $connection, CventObjectInterface $cventObject) {
-    parent::__construct($connection, self::SEARCH_CALL_NAME, $cventObject->type());
+  public function __construct(CventObjectInterface $cventObject) {
+    parent::__construct(self::SEARCH_CALL_NAME, $cventObject->type());
 
     $this->cvSearchObject = new stdClass();
     $this->cvSearchObject->SearchType = self::OR_SEARCH;
@@ -39,11 +40,11 @@ class SearchCall extends BaseCall {
     $this->filters = [];
   }
 
-  public function runQuery() {
+  public function runQuery(CventConnection $connection) {
 
     $this->prepData();
 
-    return parent::runQuery();
+    return parent::runQuery($connection);
   }
 
   public function setFilter($field, $value, $operator) {
@@ -65,5 +66,12 @@ class SearchCall extends BaseCall {
       $this->data->CvSearchObject->Filter = $this->filters;
     }
 
+  }
+
+  public function data()
+  {
+    $this->prepData();
+
+    return $this->data;
   }
 }

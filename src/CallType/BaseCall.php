@@ -2,14 +2,10 @@
 
 use CventQuery\CventConnection;
 use CventQuery\CventObject\CventObjectType;
+use CventQuery\CallType\CallTypeInterface;
 use stdClass;
 
-abstract class BaseCall {
-
-  /**
-   * @var CventConnection
-   */
-  protected $connection;
+abstract class BaseCall implements CallTypeInterface{
 
   /**
    * @var String
@@ -21,8 +17,7 @@ abstract class BaseCall {
    */
   protected $data;
 
-  public function __construct(CventConnection $connection, $callName, $objectType) {
-    $this->connection = $connection;
+  public function __construct($callName, $objectType) {
 
     $this->callName = $callName;
 
@@ -31,12 +26,12 @@ abstract class BaseCall {
   }
 
   /**
-   * @return mixed
+   * @param \CventQuery\CventConnection $connection
    *
-   * @throws \SoapFault
+   * @return mixed
    */
-  public function runQuery() {
-    return $this->connection->request($this->callName, $this->data);
+  public function runQuery(CventConnection $connection) {
+    return $connection->request($this->callName, $this->data);
   }
 
   public function setParameter($paramName,$value){
@@ -48,6 +43,14 @@ abstract class BaseCall {
     $this->data = $data;
 
     return $this;
+  }
+
+  public function method() {
+    return $this->callName;
+  }
+
+  public function data() {
+    return $this->data;
   }
 
 }

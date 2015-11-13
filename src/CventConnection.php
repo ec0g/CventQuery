@@ -98,6 +98,10 @@ class CventConnection {
     $this->cventSoapClient->setLocation($this->results->LoginResult->ServerURL);
   }
 
+  public function cventSessionExpired(){
+    return $this->cventSessionHeaderExpires < time();
+  }
+
   /**
    * Saves the cvent session header value (if pulled from cache for ex.) and sets it's
    * expiration.
@@ -135,13 +139,15 @@ class CventConnection {
    * @return mixed
    */
   public function request($method, $data) {
-    if($this->cventSessionHeaderExpires < time()){
+    /*if($this->cventSessionHeaderExpires < time()){
       $this->login();
     }else{
       $this->setSoapSessionHeader();
-    }
+    }*/
+    $this->login();
 
-   return $this->cventSoapClient->client()->$method($data);
+   //return $this->cventSoapClient->client()->$method($data);
+    return $this->cventSoapClient->call($method,$data);
   }
 
   /**
