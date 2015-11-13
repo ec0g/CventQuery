@@ -22,6 +22,16 @@ use stdClass;
  */
 class Event extends BaseCventObject {
 
+  //Event status
+  const EVENT_STATUS_COMPLETED = "Completed";
+  const EVENT_STATUS_PENDING = "Pending";
+  const EVENT_STATUS_ACTIVE = "Active";
+  const EVENT_STATUS_CLOSED = "Closed";
+
+  //available event fields
+  const FIELD_EVENT_TITLE = 'EventTitle';
+  const FIELD_EVENT_STATUS = 'EventStatus';
+
   /**
    * EventCventObject constructor.
    *

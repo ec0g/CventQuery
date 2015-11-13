@@ -79,6 +79,7 @@ class CventQuery {
     return $this;
   }
 
+
   /**
    * @return array
    */

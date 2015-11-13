@@ -6,6 +6,7 @@ use CventQuery\CventLoginCredentials;
 use CventQuery\CventSoapClient;
 use CventQuery\CventConnection;
 use CventQuery\SearchOperator;
+use CventQuery\CventObject\Event;
 use Dotenv\Dotenv;
 
 $env = new Dotenv(__DIR__);
@@ -46,7 +47,7 @@ $event = new CventQuery\CventObject\Event();
 $query = new \CventQuery\CventQuery($conn, $event);
 
 //we want only pending events
-$query->where('EventStatus', 'Completed', \CventQuery\SearchOperator::EQUALS);
+$query->where(Event::FIELD_EVENT_STATUS, Event::EVENT_STATUS_COMPLETED, \CventQuery\SearchOperator::EQUALS);
 
 //additional filters
 $utcTimeZone = new DateTimeZone('UTC');
@@ -57,11 +58,11 @@ $dateString = $eventStartDate->format('Y-m-d\TH:i:s');
 //$query->where('LastModifiedDate', $dateString,SearchOperator::LESS_THAN_OR_EQUAL_TO);
 //$query->where('EventStatus', 'Completed', \CventQuery\SearchOperator::EQUALS);
 
-$temp=[];
+$temp = [];
 
-try{
+try {
   $temp = $query->get();
-}catch (SoapFault $e){
+} catch (SoapFault $e) {
   print_r($e);
 }
 
