@@ -3,7 +3,7 @@
   "description": "CventQuery is a library package used to interact with Cvent's SOAP API",
   "license": "MIT",
   "keywords": [
-    "php,cvent,soap"
+    "php","cvent","soap"
   ],
   "authors": [
     {
