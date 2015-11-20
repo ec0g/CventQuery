@@ -1,14 +1,14 @@
 {
-  "name": "CventQuery",
+  "name": "ec0g/cvent-query",
   "description": "CventQuery is a library package used to interact with Cvent's SOAP API",
   "license": "MIT",
   "keywords": [
-    "cvent,soap"
+    "php,cvent,soap"
   ],
   "authors": [
     {
       "name": "Goce Evtimovski",
-      "email": "goce@lmo.com"
+      "email": "goce@goce.co"
     }
   ],
   "require": {
